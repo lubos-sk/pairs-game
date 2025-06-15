@@ -1,13 +1,21 @@
-const animalEmojis = [
-  "🐶", "🐱", "🐭", "🐹",
-  "🐰", "🦊", "🐻", "🐼"
+const allEmojis = [
+  "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼",
+  "🐨", "🐯", "🦁", "🐮", "🐷", "🐸", "🐵", "🐔",
+  "🐧", "🐦", "🐤", "🦆", "🦅", "🦉", "🦇", "🐺",
+  "🐗", "🐴", "🦄", "🐝", "🪲", "🐞", "🦋", "🐌"
 ];
-// Duplicate and shuffle the array for pairs
+
 let boardEmojis = [];
+let animalEmojis = [];
+let gridSize = 4; // default
+let numPairs = 8; // default for 4x4
+let cardSize = 80; // default (medium)
 
 const boardElement = document.getElementById('game-board');
 const statusElement = document.getElementById('status');
 const resetButton = document.getElementById('reset');
+const boardSizeSelect = document.getElementById('board-size');
+const cardSizeSelect = document.getElementById('card-size');
 
 let flippedCards = [];
 let matchedCards = [];
@@ -21,8 +29,34 @@ function shuffle(array) {
   }
 }
 
+function updateGridStyle() {
+  boardElement.style.gridTemplateColumns = `repeat(${gridSize}, ${cardSize}px)`;
+}
+
+function updateCardStyles() {
+  // Use a higher ratio for animal emoji font size (e.g., 60% of card size)
+  const emojiFontSize = Math.round(cardSize * 0.6);
+  const backFontSize = Math.round(cardSize * 0.4);
+
+  document.querySelectorAll('.card').forEach(card => {
+    card.style.width = `${cardSize}px`;
+    card.style.height = `${cardSize}px`;
+  });
+  document.querySelectorAll('.card .emoji').forEach(span => {
+    span.style.fontSize = `${emojiFontSize}px`;
+  });
+  document.querySelectorAll('.card .back').forEach(span => {
+    span.style.fontSize = `${backFontSize}px`;
+  });
+}
+
 function createBoard() {
   boardElement.innerHTML = '';
+  updateGridStyle();
+
+  numPairs = (gridSize * gridSize) / 2;
+  animalEmojis = allEmojis.slice(0, numPairs);
+
   boardEmojis = [...animalEmojis, ...animalEmojis];
   shuffle(boardEmojis);
   flippedCards = [];
@@ -31,19 +65,27 @@ function createBoard() {
   lockBoard = false;
   statusElement.textContent = '';
 
+  // Calculate font sizes based on card size
+  const emojiFontSize = Math.round(cardSize * 0.6);
+  const backFontSize = Math.round(cardSize * 0.4);
+
   boardEmojis.forEach((emoji, idx) => {
     const card = document.createElement('div');
     card.classList.add('card');
     card.dataset.emoji = emoji;
     card.dataset.index = idx;
+    card.style.width = `${cardSize}px`;
+    card.style.height = `${cardSize}px`;
 
     const emojiSpan = document.createElement('span');
     emojiSpan.classList.add('emoji');
     emojiSpan.textContent = emoji;
+    emojiSpan.style.fontSize = `${emojiFontSize}px`;
 
     const back = document.createElement('span');
     back.classList.add('back');
     back.textContent = "❓";
+    back.style.fontSize = `${backFontSize}px`;
 
     card.appendChild(emojiSpan);
     card.appendChild(back);
@@ -52,6 +94,8 @@ function createBoard() {
 
     boardElement.appendChild(card);
   });
+
+  updateCardStyles();
 }
 
 function flipCard(card) {
@@ -90,4 +134,15 @@ function flipCard(card) {
 
 resetButton.addEventListener('click', createBoard);
 
+boardSizeSelect.addEventListener('change', function() {
+  gridSize = parseInt(this.value, 10);
+  createBoard();
+});
+
+cardSizeSelect.addEventListener('change', function() {
+  cardSize = parseInt(this.value, 10);
+  createBoard();
+});
+
+// Initial game
 createBoard();

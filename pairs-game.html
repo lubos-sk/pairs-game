@@ -14,6 +14,9 @@
     h1 {
       margin: 16px 0;
     }
+    #controls {
+      margin-bottom: 12px;
+    }
     #game-board {
       display: grid;
       grid-template-columns: repeat(4, 80px);
@@ -27,13 +30,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
-      width: 80px;
-      height: 80px;
       cursor: pointer;
       position: relative;
       transition: transform 0.12s;
       user-select: none;
+      /* width and height are set by JS */
     }
     .card.flipped, .card.matched {
       background: #e0ffe0;
@@ -43,6 +44,7 @@
     .card .emoji {
       opacity: 0;
       transition: opacity 0.2s;
+      /* font-size set by JS */
     }
     .card.flipped .emoji, .card.matched .emoji {
       opacity: 1;
@@ -55,10 +57,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
       color: #9b9b9b;
       opacity: 1;
       transition: opacity 0.2s;
+      /* font-size set by JS */
     }
     .card.flipped .back, .card.matched .back {
       opacity: 0;
@@ -82,10 +84,28 @@
       font-size: 1.1rem;
       color: #333;
     }
+    label, select {
+      font-size: 1rem;
+      margin-right: 8px;
+    }
   </style>
 </head>
 <body>
   <h1>Animal Emoji Pairs Game 🐾</h1>
+  <div id="controls">
+    <label for="board-size">Board size: </label>
+    <select id="board-size">
+      <option value="4">4 x 4</option>
+      <option value="6">6 x 6</option>
+      <option value="8">8 x 8</option>
+    </select>
+    <label for="card-size">Card size: </label>
+    <select id="card-size">
+      <option value="60">Small</option>
+      <option value="80" selected>Medium</option>
+      <option value="100">Large</option>
+    </select>
+  </div>
   <div id="game-board"></div>
   <button id="reset">Restart</button>
   <div id="status"></div>
